@@ -1,8 +1,10 @@
 defmodule Auction.Item do
-  defstruct [
-    id: 1,
-    title: "Default title",
-    description: "An aunction item",
-    ends_at: ~N[2020-12-21 23:59:59]
-  ]
+  use Ecto.Schema
+
+  schema "items" do
+    field :title, :string
+    field :description, :string
+    field :ends_at, :utc_datetime
+    timestamps()
+  end
 end
