@@ -23,7 +23,7 @@ defmodule Auction do
 
   def update_item(%Auction.Item{} = item, attrs) do
     item
-    |> changeset(attrs)
+    |> Item.changeset(attrs)
     |> Repo.update()
   end
 
