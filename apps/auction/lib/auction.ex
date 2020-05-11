@@ -1,18 +1,34 @@
 defmodule Auction do
   alias Auction.{Item}
 
-  @repo Auction.Repo
+  alias Auction.Repo
 
   def list_items do
-    @repo.all(Item)
+    Repo.all(Item)
   end
 
   def get_item(item_id) do
-    @repo.get!(Item, item_id)
+    Repo.get!(Item, item_id)
   end
 
   def get_item_by(attrs) do
-    @repo.get_by(Item, attrs)
+    Repo.get_by(Item, attrs)
+  end
+
+  def insert_item(attrs) do
+    Auction.Item
+    |> struct(attrs)
+    |> Repo.insert()
+  end
+
+  def update_item(%Auction.Item{} = item, attrs) do
+    item
+    |> changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_item(%Auction.Item{} = item) do
+    Repo.delete(item)
   end
 end
 
