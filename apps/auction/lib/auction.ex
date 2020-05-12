@@ -16,20 +16,22 @@ defmodule Auction do
   end
 
   def insert_item(attrs) do
-    Auction.Item
-    |> struct(attrs)
+    %Item{}
+    |> Item.changeset(attrs)
     |> Repo.insert()
   end
 
-  def update_item(%Auction.Item{} = item, attrs) do
+  def update_item(%Item{} = item, attrs) do
     item
     |> Item.changeset(attrs)
     |> Repo.update()
   end
 
-  def delete_item(%Auction.Item{} = item) do
+  def delete_item(%Item{} = item) do
     Repo.delete(item)
   end
+
+  def new_item(), do: Item.changeset(%Item{})
 end
 
 # Public interface
