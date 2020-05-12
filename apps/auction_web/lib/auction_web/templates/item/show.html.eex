@@ -1,0 +1,9 @@
+<h1>A single item</h1>
+
+<p>
+  <strong><%= @item.title%></strong>: <%=@item.description%>
+</p>
+
+<p>
+  <strong>Auction ends at</strong>: <%= @item.ends_at %>
+</p>
