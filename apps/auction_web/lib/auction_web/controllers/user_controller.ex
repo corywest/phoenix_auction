@@ -3,7 +3,6 @@ defmodule AuctionWeb.UserController do
   plug :prevent_unauthorized_access when action in [:show]
 
   def show(conn, %{"id" => id}) do
-    IO.inspect(conn)
     user = Auction.get_user(id)
 
     render(conn, "show.html", user: user)
@@ -18,7 +17,10 @@ defmodule AuctionWeb.UserController do
   def create(conn, %{"user" => user_params}) do
     case Auction.insert_user(user_params) do
       {:ok, user} ->
-        redirect(conn, to: Routes.user_path(conn, :show, user))
+        conn
+        |> put_session(:user_id, user.id)
+        |> put_flash(:success, "Your account was successfully created")
+        |> redirect(to: Routes.user_path(conn, :show, user))
 
       {:error, user} ->
         render(conn, "new.html", user: user)

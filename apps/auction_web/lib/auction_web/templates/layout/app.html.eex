@@ -29,6 +29,7 @@
         <%= link "Log out", to: Routes.session_path(@conn, :delete), method: :delete %>
       <% else %>
         <%= link "Log in", to: Routes.session_path(@conn, :new) %>
+        <%= link "Create account", to: Routes.user_path(@conn, :new) %>
       <% end %>
     </div>
 
