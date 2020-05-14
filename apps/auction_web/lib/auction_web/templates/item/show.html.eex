@@ -8,8 +8,12 @@
 <div style="display: flex; flex-direction: row;">
   <div style="flex: 1">
     <h2>Current bids</h2>
-    <%= for bid <- @item.bids do %>
-      <p><%= integer_to_currency(bid.amount) %> from <%= bid.user.username %></p>
+    <%= if @item.bids do %>
+      <%= for bid <- @item.bids do %>
+        <p><%= integer_to_currency(bid.amount) %> from <%= bid.user.username %></p>
+      <% end %>
+    <% else %>
+      <p>No current bids have been placed.</p>
     <% end %>
   </div>
 </div>

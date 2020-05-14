@@ -1,6 +1,6 @@
 defmodule AuctionWeb.ItemController do
   use AuctionWeb, :controller
-  plug :require_logged_in_user when action in [:new, :create]
+  plug :require_current_user when action in [:new, :create]
 
   def index(conn, _params) do
     items = Auction.list_items()
@@ -45,12 +45,12 @@ defmodule AuctionWeb.ItemController do
     end
   end
 
-  defp require_logged_in_user(conn, %{"assigns" => %{current_user: nil}}) do
+  defp require_current_user(conn, %{"assigns" => %{current_user: nil}}) do
     conn
     |> put_flash(:error, "Nice try, but you need to be logged in to do that.")
     |> redirect(to: Routes.item_path(conn, :index))
     |> halt()
   end
 
-  defp require_logged_in_user(conn, _opts), do: conn
+  defp require_current_user(conn, _opts), do: conn
 end

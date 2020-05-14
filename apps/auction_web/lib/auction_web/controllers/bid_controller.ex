@@ -5,13 +5,16 @@ defmodule AuctionWeb.BidController do
   def create(conn, %{"bid" => %{"amount" => amount}, "item_id" => item_id}) do
     user_id = conn.assigns.current_user.id
 
-    with true <- check_if_bid_is_higher_than_max(amount, item_id),
+    with {:ok, true} <- check_if_bid_is_higher_than_max(amount, item_id),
          {:ok, bid} <- Auction.insert_bid(%{amount: amount, item_id: item_id, user_id: user_id}) do
       redirect(conn, to: Routes.item_path(conn, :show, bid.item_id))
     else
-      {:error, bid} ->
+      {:error, false} ->
         item = Auction.get_item(item_id)
-        render(conn, AuctionWeb.ItemView, "show.html", item: item, bid: bid)
+
+        conn
+        |> put_flash(:error, "Nice try, but your bid needs to be larger than the current bid.")
+        |> redirect(to: Routes.item_path(conn, :show, item))
     end
 
     # case Auction.insert_bid(%{amount: amount, item_id: item_id, user_id: user_id}) do
@@ -31,9 +34,9 @@ defmodule AuctionWeb.BidController do
       end
 
     if String.to_integer(amount) > bid_max_amount do
-      true
+      {:ok, true}
     else
-      false
+      {:error, false}
     end
   end
 
