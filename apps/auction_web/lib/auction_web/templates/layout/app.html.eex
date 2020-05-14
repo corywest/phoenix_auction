@@ -21,12 +21,12 @@
       </section>
     </header>
     <div class="container">
-      <%= link "Items", to: Routes.item_path(@conn, :index) %>
+      <p><%= link "Items", to: Routes.item_path(@conn, :index) %></p>
 
       <%= if @current_user do %>
-        Logged in as: <%= link @current_user.username, to: Routes.user_path(@conn, :show, @current_user) %>
+        <p>Logged in as: <%= link @current_user.username, to: Routes.user_path(@conn, :show, @current_user) %></p>
 
-        <%= link "Log out", to: Routes.session_path(@conn, :delete), method: :delete %>
+        <p><%= link "Log out", to: Routes.session_path(@conn, :delete), method: :delete %></p>
       <% else %>
         <%= link "Log in", to: Routes.session_path(@conn, :new) %>
         <%= link "Create account", to: Routes.user_path(@conn, :new) %>

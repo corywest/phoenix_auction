@@ -5,38 +5,21 @@ defmodule AuctionWeb.BidController do
   def create(conn, %{"bid" => %{"amount" => amount}, "item_id" => item_id}) do
     user_id = conn.assigns.current_user.id
 
-    with {:ok, true} <- check_if_bid_is_higher_than_max(amount, item_id),
-         {:ok, bid} <- Auction.insert_bid(%{amount: amount, item_id: item_id, user_id: user_id}) do
-      redirect(conn, to: Routes.item_path(conn, :show, bid.item_id))
-    else
-      {:error, false} ->
-        item = Auction.get_item(item_id)
+    case Auction.create_bid(amount, item_id, user_id) do
+      {:ok, bid} ->
+        redirect(conn, to: Routes.item_path(conn, :show, bid.item_id))
 
+      {:error, bid} ->
         conn
-        |> put_flash(:error, "Nice try, but your bid needs to be larger than the current bid.")
-        |> redirect(to: Routes.item_path(conn, :show, item))
-    end
+        |> put_flash(:error, "Something went wrong. Please try again.")
+        |> put_view(AuctionWeb.ItemView)
+        |> render("show.html", bid: bid)
 
-    # case Auction.insert_bid(%{amount: amount, item_id: item_id, user_id: user_id}) do
-    #   {:ok, bid} ->
-    #     redirect(conn, to: Routes.item_path(conn, :show, bid.item_id))
-    #   {:error, bid} ->
-    #     item = Auction.get_item(item_id)
-    #     render(conn, AuctionWeb.ItemView, "show.html", item: item, bid: bid)
-    # end
-  end
-
-  defp check_if_bid_is_higher_than_max(amount, item_id) do
-    bid_max_amount =
-      case Auction.get_highest_bid_for_item(item_id) do
-        [current_max] -> current_max
-        _ -> 0
-      end
-
-    if String.to_integer(amount) > bid_max_amount do
-      {:ok, true}
-    else
-      {:error, false}
+      {:error, item, bid} ->
+        conn
+        |> put_flash(:error, "Nice try, but you'll need to enter a larger amount than that.")
+        |> put_view(AuctionWeb.ItemView)
+        |> render("show.html", item: item, bid: bid)
     end
   end
 
