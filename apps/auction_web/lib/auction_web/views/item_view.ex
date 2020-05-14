@@ -1,11 +1,11 @@
 defmodule AuctionWeb.ItemView do
   use AuctionWeb, :view
 
-  def integer_to_currency(cents) do
-    dollar_and_cents =
-      cents
-      |> Decimal.div(100)
-      |> Decimal.round(2)
-    "$#{dollar_and_cents}"
+  def item_open_for_auction?(item) do
+    if item.ends_at > Time.utc_now do
+      true
+    else
+      false
+    end
   end
 end

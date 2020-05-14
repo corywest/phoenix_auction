@@ -8,8 +8,21 @@
   <dd><%= @user.email %></dd>
 </dl>
 
+<h3>Recent bids</h3>
+
 <div>
-  <%= for bid <- @user.bids do %>
-    <p>Current bid for <%= link(bid.item.title, to: Routes.item_path(@conn, :show, bid.item.id)) %>: <%= bid.amount %></p>
+  <%= for bid <- @bids do %>
+  <div>
+
+    <p>
+      <strong><%= formatted_datetime(bid.inserted_at) %></strong>
+      --
+      <%= integer_to_currency(bid.amount) %>
+    </p>
+
+    <em>
+      <%= link bid.item.title, to: Routes.item_path(@conn, :show, bid.item) %>
+    </em>
+  </div>
   <% end %>
 </div>
