@@ -1,6 +1,5 @@
 defmodule AuctionWeb.BidController do
   use AuctionWeb, :controller
-  plug :require_logged_in_user
 
   def create(conn, %{"bid" => %{"amount" => amount}, "item_id" => item_id}) do
     user_id = conn.assigns.current_user.id
@@ -22,13 +21,4 @@ defmodule AuctionWeb.BidController do
         |> render("show.html", item: item, bid: bid)
     end
   end
-
-  defp require_logged_in_user(conn, %{"assigns" => %{current_user: nil}}) do
-    conn
-    |> put_flash(:error, "Nice try, but you need to be logged in to do that.")
-    |> redirect(to: Routes.item_path(conn, :index))
-    |> halt()
-  end
-
-  defp require_logged_in_user(conn, _opts), do: conn
 end
