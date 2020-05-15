@@ -70,6 +70,12 @@ defmodule Auction do
     |> Repo.insert()
   end
 
+  def get_item_with_bids(item_id) do
+    item_id
+    |> get_item()
+    |> Repo.preload(:bids)
+  end
+
   def get_item_with_bids_and_user(item_id) do
     item_id
     |> get_item()
