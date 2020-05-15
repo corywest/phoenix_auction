@@ -4,6 +4,7 @@ defmodule AuctionWeb.ItemController do
 
   def index(conn, _params) do
     items = Auction.list_items()
+    IO.inspect(conn)
 
     render(conn, "index.html", items: items)
   end

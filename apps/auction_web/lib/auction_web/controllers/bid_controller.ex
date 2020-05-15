@@ -6,6 +6,17 @@ defmodule AuctionWeb.BidController do
 
     case Auction.create_bid(amount, item_id, user_id) do
       {:ok, bid} ->
+
+        html =
+          Phoenix.View.render_to_string(AuctionWeb.BidView,
+                                        "bid.html",
+                                        bid: bid,
+                                        username: conn.assigns.current_user.username)
+
+        AuctionWeb.Endpoint.broadcast("item:#{item_id}",
+                                      "new_bid",
+                                      %{body: html})
+
         redirect(conn, to: Routes.item_path(conn, :show, bid.item_id))
 
       {:error, bid} ->

@@ -73,6 +73,7 @@ defmodule Auction do
   def get_item_with_bids_and_user(item_id) do
     item_id
     |> get_item()
+    |> Repo.preload(bids: from(b in Bid, order_by: [desc: b.inserted_at]))
     |> Repo.preload(bids: [:user], user: [])
   end
 
@@ -105,8 +106,8 @@ defmodule Auction do
   defp check_if_bid_is_higher_than_max(amount, item_id) do
     bid_max_amount =
       case get_highest_bid_for_item(item_id) do
+        [nil] -> 0
         [current_max] -> current_max
-        _ -> 0
       end
 
     if String.to_integer(amount) > bid_max_amount do
@@ -122,7 +123,7 @@ defmodule Auction do
     |> Repo.insert()
   end
 
-  defp get_highest_bid_for_item(item_id) do
+  def get_highest_bid_for_item(item_id) do
     query =
       from b in Bid,
       select: max(b.amount),
