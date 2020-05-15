@@ -8,6 +8,7 @@ defmodule Auction.User do
     field :password, :string, virtual: true
     field :hashed_password, :string
     has_many :bids, Auction.Bid
+    has_many :items, Auction.Item
     timestamps()
   end
 

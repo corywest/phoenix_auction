@@ -15,10 +15,17 @@ defmodule Auction do
     Repo.get_by(Item, attrs)
   end
 
-  def insert_item(attrs) do
+  def insert_item(user_id, attrs) do
+    attrs =
+      merge_user_id(user_id, attrs)
+
     %Item{}
     |> Item.changeset(attrs)
     |> Repo.insert()
+  end
+
+  defp merge_user_id(user_id, item_params) do
+    Map.merge(item_params, %{"user_id" => user_id})
   end
 
   def update_item(%Item{} = item, attrs) do
