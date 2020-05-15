@@ -3,6 +3,7 @@
 <ul>
   <li>Description: <%= @item.description %></li>
   <li>Auction ends: <%= @item.ends_at %></li>
+  <li>Item created by: <%= @item.user.username %></li>
 </ul>
 
 <div style="display: flex; flex-direction: row;">

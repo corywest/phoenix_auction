@@ -17,7 +17,7 @@ defmodule AuctionWeb.BidController do
 
       {:error, item, bid} ->
         conn
-        |> put_flash(:error, "Nice try, but you'll need to enter a larger amount than that.")
+        |> put_flash(:error, "Nice try, but you can't do that.")
         |> put_view(AuctionWeb.ItemView)
         |> render("show.html", item: item, bid: bid)
     end
