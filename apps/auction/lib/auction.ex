@@ -70,24 +70,35 @@ defmodule Auction do
     |> Repo.insert()
   end
 
-  def get_item_with_bids(item_id) do
+  def get_item_with_bids_and_user(item_id) do
     item_id
     |> get_item()
-    |> Repo.preload(bids: [:user])
+    |> Repo.preload(bids: [:user], user: [])
   end
 
   def new_bid(), do: Bid.changeset(%Bid{})
 
   def create_bid(amount, item_id, user_id) do
-    with {:ok, true} <- check_if_bid_is_higher_than_max(amount, item_id),
+    with {:ok, true} <- check_if_user_doesnt_own_item(user_id, item_id),
+         {:ok, true} <- check_if_bid_is_higher_than_max(amount, item_id),
          {:ok, bid} <- Auction.insert_bid(%{amount: amount, item_id: item_id, user_id: user_id}) do
       {:ok, bid}
     else
       {:error, false} ->
-        item = get_item_with_bids(item_id)
+        item = get_item_with_bids_and_user(item_id)
         bid = new_bid()
 
         {:error, item, bid}
+    end
+  end
+
+  defp check_if_user_doesnt_own_item(user_id, item_id) do
+    case get_item_by(%{id: item_id, user_id: user_id}) do
+      nil ->
+        {:ok, true}
+
+      _item ->
+        {:error, false}
     end
   end
 
