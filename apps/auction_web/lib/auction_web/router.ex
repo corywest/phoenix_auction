@@ -33,6 +33,5 @@ defmodule AuctionWeb.Router do
     pipe_through :api
 
     resources "/items", ItemController, only: [:index, :show]
-    get "/items/:item_id/bids", ItemController, :show_item_with_bids
   end
 end
